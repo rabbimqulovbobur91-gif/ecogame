@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Eco Game</title>
+<style>
+body {
+    background: linear-gradient(135deg,#064e3b,#22c55e);
+    color: white;
+    font-family: Arial;
+    text-align: center;
+    padding: 30px;
+}
+.game {
+    background: rgba(0,0,0,.25);
+    padding: 25px;
+    border-radius: 20px;
+    max-width: 500px;
+    margin: auto;
+}
+button {
+    background: #bef264;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-size: 17px;
+    cursor: pointer;
+    margin: 8px;
+}
+.tree { font-size: 35px; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+
+<h1>🌍 ECO GAME</h1>
+<p>Tabiatni asra, kelajakni yarat!</p>
+
+<div class="game">
+<h2>🌱 Mening bog‘im</h2>
+<h2>Ball: <span id="score">0</span></h2>
+<h3>Daraxtlar: <span id="count">0</span></h3>
+
+<div id="trees" class="tree"></div>
+
+<button onclick="plantTree()">🌳 Daraxt ekish (+10)</button>
+
+<hr>
+<h2>🛒 DO‘KON</h2>
+<p>🌲 Qarag‘ay — 30 ball</p>
+<button onclick="buyTree(30,'🌲')">Sotib olish</button>
+
+<p>🌴 Palma — 50 ball</p>
+<button onclick="buyTree(50,'🌴')">Sotib olish</button>
+
+<p>🎄 Maxsus daraxt — 100 ball</p>
+<button onclick="buyTree(100,'🎄')">Sotib olish</button>
+
+<p id="message">Bog‘ingni rivojlantir!</p>
+<button onclick="resetGame()">🔄 O‘yinni qayta boshlash</button>
+</div>
+
+<script>
+let score = Number(localStorage.getItem("score")) || 0;
+let count = Number(localStorage.getItem("count")) || 0;
+let trees = JSON.parse(localStorage.getItem("trees") || "[]");
+
+function update() {
+    document.getElementById("score").innerText = score;
+    document.getElementById("count").innerText = count;
+    document.getElementById("trees").innerText = trees.join(" ");
+
+    localStorage.setItem("score", score);
+    localStorage.setItem("count", count);
+    localStorage.setItem("trees", JSON.stringify(trees));
+}
+
+function plantTree() {
+    score += 10;
+    count++;
+    trees.push("🌳");
+    update();
+}
+
+function buyTree(price, emoji) {
+    if (score >= price) {
+        score -= price;
+        count++;
+        trees.push(emoji);
+        document.getElementById("message").innerText =
+        "Tabriklaymiz! Yangi daraxt olding!";
+        update();
+    } else {
+        document.getElementById("message").innerText =
+        "Ballaring yetarli emas!";
+    }
+}
+
+function resetGame() {
+    if (confirm("Barcha natijalarni o‘chirmoqchimisiz?")) {
+        score = 0;
+        count = 0;
+        trees = [];
+        update();
+        document.getElementById("message").innerText =
+        "Yangi o‘yin boshlandi!";
+    }
+}
+
+update();
+</script>
+</body>
+</html>
