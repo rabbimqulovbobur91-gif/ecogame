@@ -1,113 +1,122 @@
 
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Eco Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECO GAME BOBUR</title>
+
 <style>
 body {
-    background: linear-gradient(135deg,#064e3b,#22c55e);
-    color: white;
-    font-family: Arial;
-    text-align: center;
-    padding: 30px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #052e16, #166534, #14532d);
+  color: white;
+  text-align: center;
 }
-.game {
-    background: rgba(0,0,0,.25);
-    padding: 25px;
-    border-radius: 20px;
-    max-width: 500px;
-    margin: auto;
+
+#startScreen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+h1 {
+  font-size: 55px;
+  color: #86efac;
+  text-shadow: 0 0 20px #22c55e;
+}
+
 button {
-    background: #bef264;
-    border: none;
-    padding: 13px 22px;
-    border-radius: 12px;
-    font-size: 17px;
-    cursor: pointer;
-    margin: 8px;
+  width: 230px;
+  padding: 16px;
+  margin: 12px;
+  border: none;
+  border-radius: 30px;
+  background: #22c55e;
+  color: #052e16;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }
-.tree { font-size: 35px; overflow-wrap: anywhere; }
+
+button:hover {
+  background: #86efac;
+  transform: scale(1.08);
+}
+
+#gameScreen {
+  display: none;
+  padding: 40px;
+}
+
 </style>
 </head>
+
 <body>
 
+<div id="startScreen">
+
 <h1>🌍 ECO GAME</h1>
-<p>Tabiatni asra, kelajakni yarat!</p>
+<h2>WELCOME TO ECO WORLD</h2>
+<p>Protect nature. Save the planet!</p>
 
-<div class="game">
-<h2>🌱 Mening bog‘im</h2>
-<h2>Ball: <span id="score">0</span></h2>
-<h3>Daraxtlar: <span id="count">0</span></h3>
+<button onclick="startGame()">▶ START GAME</button>
+<button onclick="howToPlay()">📖 HOW TO PLAY</button>
+<button onclick="toggleSound()" id="soundButton">🔊 SOUND ON</button>
 
-<div id="trees" class="tree"></div>
+</div>
 
-<button onclick="plantTree()">🌳 Daraxt ekish (+10)</button>
+<div id="gameScreen">
 
-<hr>
-<h2>🛒 DO‘KON</h2>
-<p>🌲 Qarag‘ay — 30 ball</p>
-<button onclick="buyTree(30,'🌲')">Sotib olish</button>
+<h1>🌱 GAME STARTED!</h1>
+<h2>Welcome to ECO WORLD!</h2>
+<p>Your adventure begins now!</p>
 
-<p>🌴 Palma — 50 ball</p>
-<button onclick="buyTree(50,'🌴')">Sotib olish</button>
+<button onclick="backToMenu()">🏠 MAIN MENU</button>
 
-<p>🎄 Maxsus daraxt — 100 ball</p>
-<button onclick="buyTree(100,'🎄')">Sotib olish</button>
-
-<p id="message">Bog‘ingni rivojlantir!</p>
-<button onclick="resetGame()">🔄 O‘yinni qayta boshlash</button>
 </div>
 
 <script>
-let score = Number(localStorage.getItem("score")) || 0;
-let count = Number(localStorage.getItem("count")) || 0;
-let trees = JSON.parse(localStorage.getItem("trees") || "[]");
 
-function update() {
-    document.getElementById("score").innerText = score;
-    document.getElementById("count").innerText = count;
-    document.getElementById("trees").innerText = trees.join(" ");
+let soundEnabled = true;
 
-    localStorage.setItem("score", score);
-    localStorage.setItem("count", count);
-    localStorage.setItem("trees", JSON.stringify(trees));
+function clickSound() {
+  if (!soundEnabled) return;
+  const audio = new Audio(
+    "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
+  );
+  audio.play().catch(() => {});
 }
 
-function plantTree() {
-    score += 10;
-    count++;
-    trees.push("🌳");
-    update();
+function startGame() {
+  clickSound();
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("gameScreen").style.display = "block";
 }
 
-function buyTree(price, emoji) {
-    if (score >= price) {
-        score -= price;
-        count++;
-        trees.push(emoji);
-        document.getElementById("message").innerText =
-        "Tabriklaymiz! Yangi daraxt olding!";
-        update();
-    } else {
-        document.getElementById("message").innerText =
-        "Ballaring yetarli emas!";
-    }
+function backToMenu() {
+  clickSound();
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("startScreen").style.display = "flex";
 }
 
-function resetGame() {
-    if (confirm("Barcha natijalarni o‘chirmoqchimisiz?")) {
-        score = 0;
-        count = 0;
-        trees = [];
-        update();
-        document.getElementById("message").innerText =
-        "Yangi o‘yin boshlandi!";
-    }
+function howToPlay() {
+  alert("Welcome! Protect nature and save the planet!");
+  clickSound();
 }
 
-update();
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById("soundButton").innerText =
+    soundEnabled ? "🔊 SOUND ON" : "🔇 SOUND OFF";
+}
+
 </script>
-</body>
+
+<<script>
+alert("ECO GAME BOBUR ISHLAYAPTI!");
+</script>/body>
 </html>
