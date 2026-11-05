@@ -1,122 +1,151 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ECO GAME BOBUR</title>
-
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #052e16, #166534, #14532d);
-  color: white;
+  font-family: Arial;
   text-align: center;
+  color: white;
+  background: linear-gradient(#064e3b,#14532d);
 }
-
-#startScreen {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-h1 {
-  font-size: 55px;
-  color: #86efac;
-  text-shadow: 0 0 20px #22c55e;
-}
-
+h1 { color: #86efac; }
 button {
-  width: 230px;
-  padding: 16px;
-  margin: 12px;
+  padding: 13px 22px;
+  margin: 8px;
   border: none;
-  border-radius: 30px;
+  border-radius: 12px;
   background: #22c55e;
-  color: #052e16;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   cursor: pointer;
 }
-
-button:hover {
-  background: #86efac;
-  transform: scale(1.08);
+button:hover { background: #86efac; }
+#menu { padding: 100px 15px; }
+#game { display: none; padding: 20px; }
+#forest {
+  min-height: 150px;
+  background: #166534;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 20px auto;
+  max-width: 600px;
+  font-size: 35px;
+  overflow-wrap: anywhere;
 }
-
-#gameScreen {
-  display: none;
-  padding: 40px;
+.card {
+  background: #ffffff18;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 10px auto;
+  max-width: 450px;
 }
-
 </style>
 </head>
-
 <body>
 
-<div id="startScreen">
-
-<h1>🌍 ECO GAME</h1>
+<div id="menu">
+<h1>🌍 ECO GAME BOBUR</h1>
 <h2>WELCOME TO ECO WORLD</h2>
-<p>Protect nature. Save the planet!</p>
-
+<p>Plant trees. Build your forest!</p>
 <button onclick="startGame()">▶ START GAME</button>
-<button onclick="howToPlay()">📖 HOW TO PLAY</button>
-<button onclick="toggleSound()" id="soundButton">🔊 SOUND ON</button>
-
 </div>
 
-<div id="gameScreen">
+<div id="game">
+<h1>🌳 ECO WORLD</h1>
 
-<h1>🌱 GAME STARTED!</h1>
-<h2>Welcome to ECO WORLD!</h2>
-<p>Your adventure begins now!</p>
+<div class="card">
+<h2>💰 Money: <span id="score">0</span></h2>
+<h3>🌱 Trees: <span id="count">0</span></h3>
+</div>
 
-<button onclick="backToMenu()">🏠 MAIN MENU</button>
+<button onclick="plantTree()">🌱 PLANT TREE (+10)</button>
 
+<h2>🌲 YOUR FOREST</h2>
+<div id="forest">Your forest is empty</div>
+
+<h2>🏪 TREE SHOP</h2>
+
+<div class="card">
+🌲 Pine Tree — 30 points
+<br>
+<button onclick="buyTree(30,'🌲')">BUY</button>
+</div>
+
+<div class="card">
+🌴 Palm Tree — 50 points
+<br>
+<button onclick="buyTree(50,'🌴')">BUY</button>
+</div>
+
+<div class="card">
+🎄 Christmas Tree — 100 points
+<br>
+<button onclick="buyTree(100,'🎄')">BUY</button>
+</div>
+
+<button onclick="backMenu()">🏠 MAIN MENU</button>
+<button onclick="resetGame()">🔄 RESET GAME</button>
 </div>
 
 <script>
+let score = Number(localStorage.getItem("score")) || 0;
+let trees = JSON.parse(localStorage.getItem("trees") || "[]");
 
-let soundEnabled = true;
+function save() {
+  localStorage.setItem("score", score);
+  localStorage.setItem("trees", JSON.stringify(trees));
+  update();
+}
 
-function clickSound() {
-  if (!soundEnabled) return;
-  const audio = new Audio(
-    "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
-  );
-  audio.play().catch(() => {});
+function update() {
+  document.getElementById("score").textContent = score;
+  document.getElementById("count").textContent = trees.length;
+  document.getElementById("forest").textContent =
+    trees.length ? trees.join(" ") : "Your forest is empty";
 }
 
 function startGame() {
-  clickSound();
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  update();
 }
 
-function backToMenu() {
-  clickSound();
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("startScreen").style.display = "flex";
+function backMenu() {
+  document.getElementById("game").style.display = "none";
+  document.getElementById("menu").style.display = "block";
 }
 
-function howToPlay() {
-  alert("Welcome! Protect nature and save the planet!");
-  clickSound();
+function plantTree() {
+  score += 10;
+  trees.push("🌳");
+  save();
 }
 
-function toggleSound() {
-  soundEnabled = !soundEnabled;
-  document.getElementById("soundButton").innerText =
-    soundEnabled ? "🔊 SOUND ON" : "🔇 SOUND OFF";
+function buyTree(price, emoji) {
+  if (score < price) {
+    alert("Not enough money! Plant more trees.");
+    return;
+  }
+  score -= price;
+  trees.push(emoji);
+  save();
 }
 
+function resetGame() {
+  if (confirm("Reset all your progress?")) {
+    score = 0;
+    trees = [];
+    save();
+  }
+}
+
+update();
 </script>
 
-<<script>
-alert("ECO GAME BOBUR ISHLAYAPTI!");
-</script>/body>
+</body>
 </html>
